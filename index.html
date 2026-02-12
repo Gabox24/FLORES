@@ -8,153 +8,115 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        body {                
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;                
-            margin: 0;                
-            padding: 0;                
-            background-color: white;                
-            padding-bottom: 70px;
-        }
-
-        /* --- Barra de Búsqueda --- */
-        #search-bar {
-            display: none;
-            width: 90%;
-            margin: 10px auto;
-            padding: 10px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        /* --- Estilo Pinterest (Masonry) --- */
-        .pinterest-grid {                
-            column-count: 2;
-            column-gap: 8px;                
-            padding: 8px;
-        }
-
-        .card {                
-            background-color: white;                
-            border-radius: 16px;                
-            overflow: hidden;                
-            margin-bottom: 8px;                
-            break-inside: avoid;
-            position: relative;
-        }
-
-        .card img {                
-            width: 100%;                
-            height: auto;                
-            display: block;                
-            border-radius: 16px;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: white; padding-bottom: 70px; }
         
-        /* --- Botón Borrar --- */
-        .delete-btn {
+        #search-bar { display: none; width: 90%; margin: 10px auto; padding: 10px; border-radius: 20px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
+
+        .pinterest-grid { column-count: 2; column-gap: 8px; padding: 8px; }
+        .card { background-color: white; border-radius: 16px; overflow: hidden; margin-bottom: 8px; break-inside: avoid; position: relative; }
+        .card img { width: 100%; height: auto; display: block; border-radius: 16px; cursor: pointer; }
+        
+        /* Botones de Admin */
+        .admin-btns {
             display: none;
             position: absolute;
             top: 5px;
             right: 5px;
-            background-color: rgba(255, 0, 0, 0.7);
+            z-index: 10;
+            display: flex;
+            gap: 5px;
+        }
+        .admin-btn {
+            background-color: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 25px;
-            height: 25px;
+            width: 30px;
+            height: 30px;
             cursor: pointer;
-            font-weight: bold;
-            line-height: 25px;
-            text-align: center;
-            z-index: 10;
-        }
-
-        /* --- Menú Inferior --- */
-        .bottom-nav {                
-            position: fixed;                
-            bottom: 0;                
-            left: 0;                
-            width: 100%;                
-            height: 65px;                
-            background-color: white;                
-            display: flex;                
-            justify-content: space-around;                
-            align-items: center;                
-            border-top: 1px solid #e0e0e0;                
-            z-index: 1000;
-        }
-
-        .nav-item {                
-            text-decoration: none;                
-            color: #555;                
-            font-size: 24px;                
-            cursor: pointer;
-            padding: 10px;
+            font-size: 14px;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
+        .delete-btn { background-color: rgba(255, 0, 0, 0.7); }
+        .edit-btn { background-color: rgba(0, 123, 255, 0.7); }
 
-        .nav-item.active {
-            color: #e60023;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background-color: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e0e0e0; z-index: 1000; }
+        .nav-item { text-decoration: none; color: #555; font-size: 24px; cursor: pointer; padding: 10px; display: flex; align-items: center; }
+        .nav-item.active { color: #e60023; }
+        
+        #file-input, #edit-input { display: none; }
 
-        #file-input {
-            display: none;
-        }
-
-        /* --- Modal de Login (Oculto) --- */
-        #login-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 2000;
-            width: 80%;
-            max-width: 300px;
-            text-align: center;
-        }
-        #login-modal input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-        #login-modal button {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            margin-bottom: 5px;
-        }
+        /* --- Modal de Login --- */
+        #login-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 2000; width: 80%; max-width: 300px; text-align: center; }
+        #login-modal input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        #login-modal button { width: 100%; padding: 10px; border-radius: 8px; border: none; cursor: pointer; margin-bottom: 5px; }
         .btn-login { background-color: #e60023; color: white; }
         .btn-cancel { background-color: #eee; color: #333; }
+        .btn-logout { background-color: #555; color: white; display: none; }
+
+        /* --- Modal de Imagen --- */
+        #image-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #modal-img { max-width: 90%; max-height: 60%; border-radius: 10px; margin-bottom: 20px; }
+        #close-modal {
+            position: absolute; top: 20px; right: 20px;
+            color: white; font-size: 30px; cursor: pointer;
+        }
+        
+        /* --- Botón Pedir Info Mejorado --- */
+        .btn-pedir-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
+            transition: transform 0.2s;
+        }
+        .btn-pedir-info:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
     <input type="text" id="search-bar" placeholder="Buscar flores o regalos...">
-
     <div class="pinterest-grid" id="grid"></div>
 
     <div id="login-modal">
-        <h3>Acceso Administrador</h3>
-        <input type="email" id="admin-email" placeholder="Correo electrónico">
-        <input type="password" id="admin-password" placeholder="Contraseña">
-        <button class="btn-login" onclick="loginAdmin()">Entrar</button>
+        <h3 id="modal-title">Acceso Administrador</h3>
+        <div id="login-fields">
+            <input type="email" id="admin-email" placeholder="Correo electrónico">
+            <input type="password" id="admin-password" placeholder="Contraseña">
+            <button class="btn-login" onclick="loginAdmin()">Entrar</button>
+        </div>
+        <button class="btn-logout" id="logout-btn" onclick="logoutAdmin()">Cerrar Sesión</button>
         <button class="btn-cancel" onclick="toggleLogin()">Cancelar</button>
     </div>
 
+    <div id="image-modal">
+        <span id="close-modal" onclick="closeImageModal()">&times;</span>
+        <img id="modal-img" src="" alt="Ampliada">
+        <a id="whatsapp-link" href="#" target="_blank" class="btn-pedir-info">
+            <i class="fab fa-whatsapp fa-lg"></i> Pedir Info
+        </a>
+    </div>
+
     <div class="bottom-nav">
-        <a href="/" class="nav-item active"><i class="fas fa-house"></i></a>
+        <a href="#" class="nav-item active" onclick="actualizarPagina()"><i class="fas fa-house"></i></a>
         
         <a href="#" class="nav-item" onclick="toggleSearch()"><i class="fas fa-search"></i></a>
         
@@ -163,16 +125,17 @@
         </label>
         <input type="file" id="file-input" accept="image/*">
         
-        <a href="https://wa.me/TUNUMERO" target="_blank" class="nav-item"><i class="fab fa-whatsapp"></i></a>
+        <input type="file" id="edit-input" accept="image/*">
         
-        <a href="#" class="nav-item" id="avatar-btn" onclick="toggleLogin()"><i class="fas fa-user"></i></a>
+        <a href="https://wa.me/584121234567" target="_blank" class="nav-item"><i class="fab fa-whatsapp"></i></a>
+        
+        <a href="#" class="nav-item" id="avatar-btn" onclick="checkSessionAndToggle()"><i class="fas fa-user"></i></a>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
-        // Importar Auth
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
         // !!! DATOS DE FIREBASE !!!
         const firebaseConfig = {
@@ -184,84 +147,112 @@
             appId: "1:534385565327:web:b4949f533d77e64b3b5afa",
             measurementId: "G-0L7KGNEW4K"
         };
+        const PHONE_NUMBER = "584145935158"; // !!! TU NÚMERO !!!
 
-        // DATOS DE CLOUDINARY
         const CLOUD_NAME = "dt4kgs8ge"; 
         const UPLOAD_PRESET = "FLORES"; 
 
-        // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const auth = getAuth(app); // Inicializar Auth
+        const auth = getAuth(app);
 
-        // --- PERSISTENCIA: Recordar inicio de sesión ---
         setPersistence(auth, browserLocalPersistence);
 
         const fileInput = document.getElementById('file-input');
+        const editInput = document.getElementById('edit-input');
         const grid = document.getElementById('grid');
+        let currentEditId = null;
 
-        // --- GESTIÓN DE LOGIN ---
-        window.toggleLogin = () => {
-            const modal = document.getElementById('login-modal');
-            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        // --- FUNCIONES DE UI ---
+        window.actualizarPagina = () => location.reload();
+        window.toggleLogin = () => document.getElementById('login-modal').style.display = document.getElementById('login-modal').style.display === 'block' ? 'none' : 'block';
+
+        window.checkSessionAndToggle = () => {
+            const user = auth.currentUser;
+            const loginFields = document.getElementById('login-fields');
+            const logoutBtn = document.getElementById('logout-btn');
+            const title = document.getElementById('modal-title');
+            if (user) {
+                loginFields.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                title.innerText = "Administrador Conectado";
+            } else {
+                loginFields.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                title.innerText = "Acceso Administrador";
+            }
+            toggleLogin();
         }
 
         window.loginAdmin = () => {
             const email = document.getElementById('admin-email').value;
             const password = document.getElementById('admin-password').value;
-            
             signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    alert("¡Sesión iniciada!");
-                    toggleLogin();
-                })
-                .catch((error) => {
-                    alert("Error: " + error.message);
-                });
+                .then(() => { alert("¡Sesión iniciada!"); toggleLogin(); })
+                .catch((error) => alert("Error: " + error.message));
+        }
+
+        window.logoutAdmin = () => {
+            signOut(auth).then(() => { alert("Sesión cerrada."); toggleLogin(); })
+            .catch((error) => alert("Error al cerrar sesión."));
         }
 
         // --- VERIFICAR ESTADO DE AUTENTICACIÓN ---
         onAuthStateChanged(auth, (user) => {
             const addBtn = document.getElementById('add-btn');
+            const adminBtns = document.querySelectorAll('.admin-btns');
+            const avatarBtn = document.getElementById('avatar-btn');
+            
             if (user) {
-                // Usuario logueado: mostrar botón de añadir
                 addBtn.style.display = 'flex';
-                // Los botones de borrar se manejarán en toggleDeleteMode
+                adminBtns.forEach(btn => btn.style.display = 'flex');
+                avatarBtn.style.color = '#e60023';
             } else {
-                // Usuario NO logueado: ocultar botón de añadir
                 addBtn.style.display = 'none';
-                // Asegurar que los botones de borrar no sean visibles
-                document.querySelectorAll('.delete-btn').forEach(btn => btn.style.display = 'none');
+                adminBtns.forEach(btn => btn.style.display = 'none');
+                avatarBtn.style.color = '#555';
             }
         });
 
-        // --- CARGAR IMÁGENES A CLOUDINARY ---
-        fileInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
+        // --- SUBIR IMÁGENES (NUEVAS Y EDICIÓN) ---
+        const uploadImage = async (file) => {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('upload_preset', UPLOAD_PRESET);
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            return data.secure_url;
+        }
 
-            try {
-                // Subir a Cloudinary
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await response.json();
-                
-                // Guardar la URL optimizada en Firestore
-                await addDoc(collection(db, "productos"), {
-                    imageUrl: data.secure_url,
-                    timestamp: new Date()
-                });
-                alert("¡Imagen subida con éxito!");
-            } catch (error) {
-                console.error("Error al subir:", error);
-                alert("Error al subir imagen.");
-            }
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const imageUrl = await uploadImage(file);
+            await addDoc(collection(db, "productos"), {
+                imageUrl: imageUrl,
+                timestamp: new Date()
+            });
+            alert("¡Producto añadido!");
+        });
+
+        // --- EDICIÓN ---
+        window.editCard = (docId) => {
+            currentEditId = docId;
+            editInput.click();
+        }
+
+        editInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file || !currentEditId) return;
+            const imageUrl = await uploadImage(file);
+            await updateDoc(doc(db, "productos", currentEditId), {
+                imageUrl: imageUrl
+            });
+            alert("¡Producto actualizado!");
+            currentEditId = null;
         });
 
         // --- MOSTRAR IMÁGENES EN TIEMPO REAL ---
@@ -269,53 +260,54 @@
             grid.innerHTML = '';
             snapshot.forEach((doc) => {
                 const data = doc.data();
-                
                 const newCard = document.createElement('div');
                 newCard.className = 'card';
-                
-                // Botón borrar
-                newCard.innerHTML = `<button class="delete-btn" onclick="deleteCard('${doc.id}')">X</button>`;
-                
-                const newImg = document.createElement('img');
-                newImg.src = data.imageUrl; // URL de Cloudinary
-                
-                newCard.appendChild(newImg);
-                grid.prepend(newCard); // Añadir arriba
+                newCard.innerHTML = `
+                    <div class="admin-btns">
+                        <button class="admin-btn edit-btn" onclick="editCard('${doc.id}')"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="admin-btn delete-btn" onclick="deleteCard('${doc.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <img src="${data.imageUrl}" onclick="openImageModal('${data.imageUrl}')">`;
+                grid.prepend(newCard);
             });
+            
+            if (auth.currentUser) {
+                document.querySelectorAll('.admin-btns').forEach(btn => btn.style.display = 'flex');
+            }
         });
 
-        // --- BORRAR IMÁGENES DE FIRESTORE ---
+        // --- BORRAR ---
         window.deleteCard = async (docId) => {
             if(confirm("¿Eliminar este producto?")) {
                 await deleteDoc(doc(db, "productos", docId));
             }
         }
 
-        // --- UI (Búsqueda y modo borrar) ---
+        // --- UI (Búsqueda y Modal) ---
         window.toggleSearch = () => {
             const searchBar = document.getElementById('search-bar');
             searchBar.style.display = searchBar.style.display === 'block' ? 'none' : 'block';
             if (searchBar.style.display === 'block') searchBar.focus();
         }
 
-        window.toggleDeleteMode = () => {
-            // Solo permitir borrar si está logueado
-            if (!auth.currentUser) {
-                toggleLogin();
-                return;
-            }
+        // --- MODAL IMAGEN Y WHATSAPP ---
+        window.openImageModal = (imageUrl) => {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-img');
+            const whatsappLink = document.getElementById('whatsapp-link');
             
-            const buttons = document.getElementsByClassName('delete-btn');
-            const avatar = document.getElementById('avatar-btn');
-            let isDeleteMode = false;
+            modalImg.src = imageUrl;
             
-            for (let btn of buttons) {
-                btn.style.display = btn.style.display === 'block' ? 'none' : 'block';
-                if (btn.style.display === 'block') isDeleteMode = true;
-            }
+            // MENSAJE AUTOMÁTICO MEJORADO
+            const textMessage = `Hola buenas , se encuentra disponible y a que costo este producto? ${imageUrl}`;
+            const message = encodeURIComponent(textMessage);
+            whatsappLink.href = `https://wa.me/${PHONE_NUMBER}?text=${message}`;
             
-            avatar.style.color = isDeleteMode ? '#e60023' : '#555';
+            modal.style.display = 'flex';
         }
+
+        window.closeImageModal = () => document.getElementById('image-modal').style.display = 'none';
     </script>
 </body>
 </html>
+
