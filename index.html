@@ -16,14 +16,13 @@
         .card { background-color: white; border-radius: 16px; overflow: hidden; margin-bottom: 8px; break-inside: avoid; position: relative; }
         .card img { width: 100%; height: auto; display: block; border-radius: 16px; cursor: pointer; }
         
-        /* Botones de Admin */
+        /* --- BOTONES DE ADMIN (OCULTOS POR DEFECTO) --- */
         .admin-btns {
-            display: none;
+            display: none; /* ESTO OCULTA LOS BOTONES A LOS CLIENTES */
             position: absolute;
             top: 5px;
             right: 5px;
             z-index: 10;
-            display: flex;
             gap: 5px;
         }
         .admin-btn {
@@ -137,7 +136,6 @@
         import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
-        // !!! DATOS DE FIREBASE !!!
         const firebaseConfig = {
             apiKey: "AIzaSyDe6nwcA7ez_9qDPL6o_fGa0G3oxV6Vspk",
             authDomain: "flores-6df3b.firebaseapp.com",
@@ -147,7 +145,7 @@
             appId: "1:534385565327:web:b4949f533d77e64b3b5afa",
             measurementId: "G-0L7KGNEW4K"
         };
-        const PHONE_NUMBER = "584145935158"; // !!! TU NÚMERO !!!
+        const PHONE_NUMBER = "584121234567"; // !!! TU NÚMERO !!!
 
         const CLOUD_NAME = "dt4kgs8ge"; 
         const UPLOAD_PRESET = "FLORES"; 
@@ -197,17 +195,19 @@
             .catch((error) => alert("Error al cerrar sesión."));
         }
 
-        // --- VERIFICAR ESTADO DE AUTENTICACIÓN ---
+        // --- VERIFICAR ESTADO DE AUTENTICACIÓN (SEGURIDAD) ---
         onAuthStateChanged(auth, (user) => {
             const addBtn = document.getElementById('add-btn');
             const adminBtns = document.querySelectorAll('.admin-btns');
             const avatarBtn = document.getElementById('avatar-btn');
             
             if (user) {
+                // Si hay usuario (admin), mostramos los botones
                 addBtn.style.display = 'flex';
                 adminBtns.forEach(btn => btn.style.display = 'flex');
                 avatarBtn.style.color = '#e60023';
             } else {
+                // Si NO hay usuario, ocultamos los botones (display none)
                 addBtn.style.display = 'none';
                 adminBtns.forEach(btn => btn.style.display = 'none');
                 avatarBtn.style.color = '#555';
@@ -262,6 +262,7 @@
                 const data = doc.data();
                 const newCard = document.createElement('div');
                 newCard.className = 'card';
+                // HTML con botones integrados
                 newCard.innerHTML = `
                     <div class="admin-btns">
                         <button class="admin-btn edit-btn" onclick="editCard('${doc.id}')"><i class="fas fa-pencil-alt"></i></button>
@@ -271,8 +272,10 @@
                 grid.prepend(newCard);
             });
             
-            if (auth.currentUser) {
-                document.querySelectorAll('.admin-btns').forEach(btn => btn.style.display = 'flex');
+            // --- RE-EVALUAR SEGURIDAD ---
+            // Al actualizar la lista, ocultamos los botones si no hay admin logueado
+            if (!auth.currentUser) {
+                document.querySelectorAll('.admin-btns').forEach(btn => btn.style.display = 'none');
             }
         });
 
@@ -298,7 +301,6 @@
             
             modalImg.src = imageUrl;
             
-            // MENSAJE AUTOMÁTICO MEJORADO
             const textMessage = `Hola buenas , se encuentra disponible y a que costo este producto? ${imageUrl}`;
             const message = encodeURIComponent(textMessage);
             whatsappLink.href = `https://wa.me/${PHONE_NUMBER}?text=${message}`;
@@ -310,4 +312,5 @@
     </script>
 </body>
 </html>
+
 
